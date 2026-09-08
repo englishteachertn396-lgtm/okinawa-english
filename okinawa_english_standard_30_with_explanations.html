@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>沖縄で学ぶ！英語ミッション 標準30問</title>
+<style>
+  :root{--sea:#39c5d8;--deep:#087f8c;--sand:#fff6d7;--coral:#ff7f6e;--green:#48a868;--ink:#17324d;--ok:#2e9d52;--ng:#d64545;--purple:#8d6ac8}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Yu Gothic","Hiragino Kaku Gothic ProN",Meiryo,sans-serif;background:linear-gradient(#dffaff 0 31%,#b9f2f7 31% 52%,#fff0c7 52%);color:var(--ink);min-height:100vh}
+  header{background:rgba(255,255,255,.86);border-bottom:5px solid var(--sea);padding:16px 20px;text-align:center;position:sticky;top:0;z-index:10}
+  h1{margin:0;font-size:clamp(24px,4vw,40px);color:#0b8796;letter-spacing:.04em}
+  .sub{margin-top:5px;font-weight:700;color:#566}
+  .shell{max-width:1180px;margin:24px auto;padding:0 18px 35px;display:grid;grid-template-columns:230px 1fr;gap:18px}
+  .side,.card{background:rgba(255,255,255,.94);border-radius:22px;box-shadow:0 8px 24px rgba(0,80,100,.15);border:2px solid #bceef2}
+  .side{padding:15px;height:max-content;position:sticky;top:115px}
+  .side h3{margin:0 0 10px;color:#087f8c;text-align:center}
+  .nums{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+  .num{border:0;border-radius:10px;padding:8px 0;font-weight:800;background:#e9fbfc;color:#137b86;cursor:pointer}
+  .num.done{background:#d9f5df;color:#278347}.num.wrong{background:#ffe2e2;color:#bb3e3e}.num.active{outline:3px solid #ffb84d;background:#fff7d6}
+  .card{padding:24px;position:relative;overflow:hidden}
+  .deco{font-size:38px;position:absolute;right:18px;top:12px;opacity:.95}
+  .badge{display:inline-block;background:#fff0b7;border:2px solid #f4c94f;border-radius:999px;padding:6px 14px;font-weight:900;color:#8a6712}
+  .qno{font-size:22px;font-weight:900;margin:18px 0 8px;color:#087f8c}
+  .question{font-size:clamp(21px,3vw,30px);font-weight:800;line-height:1.55;background:#f7feff;border-left:8px solid var(--sea);padding:16px 18px;border-radius:12px;margin-bottom:16px}
+  .jp{font-size:16px;color:#5a6c76;margin-top:7px;font-weight:700}
+  .options{display:grid;gap:12px}
+  .option{display:flex;align-items:center;gap:12px;padding:14px 16px;border:2px solid #b9e8ec;border-radius:14px;background:white;cursor:pointer;font-size:18px;font-weight:700;transition:.15s}
+  .option:hover{transform:translateY(-1px);border-color:#58cdd7}.option input{transform:scale(1.25)}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+  button.action{border:0;border-radius:12px;padding:12px 20px;font-weight:900;font-size:16px;cursor:pointer}
+  #check{background:var(--coral);color:white} #next{background:var(--green);color:white} #retry{background:#e9edf1;color:#42566a}
+  .feedback{margin-top:18px;border-radius:16px;padding:16px 18px;display:none;font-weight:800}
+  .feedback.ok{display:block;background:#e7f8eb;border:2px solid #84d395;color:#25703e}
+  .feedback.ng{display:block;background:#fff0f0;border:2px solid #f0a6a6;color:#a63c3c}
+  .explain{margin-top:12px;background:#fffaf0;border:2px solid #f5d883;border-radius:16px;padding:16px;display:none;line-height:1.75}
+  .explain.show{display:block}.explain h4{margin:0 0 6px;color:#9a6b00;font-size:18px}
+  .score{margin-top:18px;padding:13px 16px;background:#eefbff;border-radius:14px;font-weight:900;color:#0b7f8d}
+  .footer-note{text-align:center;margin-top:22px;font-weight:800;color:#35606c}
+  @media(max-width:780px){.shell{grid-template-columns:1fr}.side{position:static}.nums{grid-template-columns:repeat(10,1fr)}.num{font-size:12px}.card{padding:18px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>🌺 沖縄で学ぶ！英語ミッション 🌊</h1>
+  <div class="sub">標準レベル30問｜have to / has to / must / must not / Don't ～.</div>
+</header>
+<div class="shell">
+  <aside class="side">
+    <h3>🏝️ 問題マップ</h3>
+    <div class="nums" id="nums"></div>
+    <div class="score" id="score">正解：0 / 30</div>
+  </aside>
+  <main class="card">
+    <div class="deco">🦁🌺</div>
+    <span class="badge">⭐ STANDARD</span>
+    <div class="qno" id="qno"></div>
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+    <div class="actions">
+      <button class="action" id="check">答え合わせ</button>
+      <button class="action" id="next">次の問題 ▶</button>
+      <button class="action" id="retry">最初から</button>
+    </div>
+    <div id="feedback" class="feedback"></div>
+    <div id="explain" class="explain"><h4>💡 この問題の解説</h4><div id="explainText"></div></div>
+    <div class="footer-note">🌴 文の形だけでなく「意味の違い」まで考えよう！ 🌴</div>
+  </main>
+</div>
+<script>
+const qs=[
+{q:'I (　) finish this homework tonight.',jp:'私は今夜、この宿題を終えなければなりません。',a:'have to',o:['have to','has to','don’t have to','must not'],e:'主語が I なので <b>have to</b> を使います。have to は「～しなければならない」です。'},
+{q:'Mika (　) practice the piano after school.',jp:'ミカは放課後、ピアノを練習しなければなりません。',a:'has to',o:['must not','has to','don’t have to','have to'],e:'主語 Mika は三人称単数なので <b>has to</b> になります。'},
+{q:'You (　) bring your lunch tomorrow. School will prepare it.',jp:'明日は昼食を持ってくる必要はありません。学校が用意します。',a:'don’t have to',o:['must not','have to','don’t have to','has to'],e:'「必要はない」なので <b>don’t have to</b>。<b>must not</b> は「してはいけない」で意味が違います。'},
+{q:'Ken (　) come early today because practice starts later.',jp:'ケンは今日は早く来る必要はありません。',a:'doesn’t have to',o:['mustn’t','doesn’t have to','has to','must'],e:'主語 Ken は三人称単数。「必要はない」は <b>doesn’t have to</b> です。doesn’t の後は <b>have</b> の原形になります。'},
+{q:'We (　) be quiet in the library.',jp:'私たちは図書館では静かにしなければなりません。',a:'must',o:['must','must not','don’t have to','has to'],e:'「～しなければならない」を強く表すので <b>must</b> が合います。must は主語が変わっても形が変わりません。'},
+{q:'You (　) run in the hallway.',jp:'廊下を走ってはいけません。',a:'must not',o:['must','don’t have to','must not','have to'],e:'「～してはいけない」という禁止なので <b>must not</b> を使います。'},
+{q:'Choose the sentence with the same meaning as “You must not touch it.”',jp:'同じ意味の文を選びなさい。',a:"Don’t touch it.",o:["You don’t have to touch it.","Don’t touch it.","You have to touch it.","You must touch it."],e:'<b>You must not ～.</b> は禁止。「～するな」という命令文 <b>Don’t ～.</b> とほぼ同じ意味です。'},
+{q:'Choose the sentence with the same meaning as “I have to study.”',jp:'同じ意味の文を選びなさい。',a:'I must study.',o:['I must study.','I must not study.','I don’t study.','I don’t have to study.'],e:'<b>have to ～</b> と <b>must ～</b> はどちらも「～しなければならない」を表します。'},
+{q:'My sister (　) wash the dishes today.',jp:'姉は今日、皿を洗わなければなりません。',a:'has to',o:['have to','has to','must not','don’t have to'],e:'My sister は三人称単数なので <b>has to</b>。'},
+{q:'You (　) buy a ticket. This event is free.',jp:'チケットを買う必要はありません。イベントは無料です。',a:'don’t have to',o:['mustn’t','don’t have to','have to','has to'],e:'無料なので「買う必要はない」。したがって <b>don’t have to</b> です。'},
+{q:'Taro (　) use his phone during the test.',jp:'太郎はテスト中にスマホを使ってはいけません。',a:'must not',o:['must not','doesn’t have to','has to','must'],e:'これは禁止なので <b>must not</b>。<b>doesn’t have to</b> だと「使う必要はない」になります。'},
+{q:'Which is correct?',jp:'正しい英文を選びなさい。',a:'She has to get up early.',o:['She have to get up early.','She has to get up early.','She musts get up early.','She has get up early.'],e:'三人称単数では <b>has to</b>。また must に s はつきません。'},
+{q:'Which is correct?',jp:'正しい英文を選びなさい。',a:"He doesn’t have to cook today.",o:["He doesn’t has to cook today.","He don’t have to cook today.","He doesn’t have to cook today.","He mustn’t to cook today."],e:'doesn’t の後は動詞の原形なので <b>have</b>。<b>doesn’t have to</b> で「～する必要はない」です。'},
+{q:'“You don’t have to hurry.” means ...',jp:'英文の意味として正しいものを選びなさい。',a:'急ぐ必要はありません。',o:['急がなければなりません。','急いではいけません。','急ぐ必要はありません。','急ぎなさい。'],e:'<b>don’t have to ～</b> は「～する必要はない」。禁止ではありません。'},
+{q:'“You mustn’t enter this room.” means ...',jp:'英文の意味として正しいものを選びなさい。',a:'この部屋に入ってはいけません。',o:['この部屋に入る必要はありません。','この部屋に入ってはいけません。','この部屋に入らなければなりません。','この部屋に入りません。'],e:'<b>mustn’t</b> は <b>must not</b> の短縮形で、「～してはいけない」という禁止です。'},
+{q:'Rewrite: “We have to wear uniforms.”',jp:'must を使ってほぼ同じ意味に書き換えなさい。',a:'We must wear uniforms.',o:['We must wear uniforms.','We must not wear uniforms.','We don’t have to wear uniforms.','We must to wear uniforms.'],e:'<b>have to ～ = must ～</b>。must の後は動詞の原形で、to はつけません。'},
+{q:'Rewrite: “He has to clean his room.”',jp:'must を使ってほぼ同じ意味に書き換えなさい。',a:'He must clean his room.',o:['He musts clean his room.','He must clean his room.','He must to clean his room.','He doesn’t have to clean his room.'],e:'has to は主語に応じて形が変わりますが、<b>must は主語が He でも形が変わりません</b>。'},
+{q:'Rewrite: “You must not swim here.”',jp:'命令文でほぼ同じ意味にしなさい。',a:"Don’t swim here.",o:["Don’t swim here.","Not swim here.","You don’t swim here.","Don’t to swim here."],e:'<b>You must not ～.</b> は <b>Don’t ～.</b> に書き換えられます。Don’t の後も動詞の原形です。'},
+{q:'Which sentence means “宿題をする必要はありません。”?',jp:'正しい英文を選びなさい。',a:"You don’t have to do your homework.",o:["You mustn’t do your homework.","You don’t have to do your homework.","You have to do your homework.","Don’t do your homework."],e:'「必要はない」は <b>don’t have to</b>。mustn’t や Don’t は「してはいけない」です。'},
+{q:'Which sentence means “ここで写真を撮ってはいけません。”?',jp:'正しい英文を選びなさい。',a:'You must not take pictures here.',o:['You don’t have to take pictures here.','You must take pictures here.','You must not take pictures here.','You have to take pictures here.'],e:'「～してはいけない」は <b>must not</b>。'},
+{q:'A: Do I have to bring a pen?  B: No, you (　).',jp:'「いいえ、持ってくる必要はありません。」',a:"don’t",o:['mustn’t','don’t','have to','has to'],e:'Do I have to ～? に「必要はない」と答えるなら <b>No, you don’t.</b> が自然です。'},
+{q:'A: Does Emi have to come today?  B: No, she (　).',jp:'「いいえ、来る必要はありません。」',a:"doesn’t",o:['isn’t','mustn’t','doesn’t','don’t'],e:'Does ... have to ～? への否定の答えは <b>No, she doesn’t.</b>。'},
+{q:'Which word order is correct?',jp:'語順が正しいものを選びなさい。',a:'We have to clean the room.',o:['We to have clean the room.','We have clean to the room.','We have to clean the room.','We to clean have the room.'],e:'have to の後に動詞の原形を置くので <b>have to clean</b> の順です。'},
+{q:'Which word order is correct?',jp:'語順が正しいものを選びなさい。',a:'She doesn’t have to make dinner.',o:['She doesn’t to have make dinner.','She doesn’t have to make dinner.','She have doesn’t to make dinner.','She doesn’t has to make dinner.'],e:'<b>doesn’t + have to + 動詞の原形</b> の順です。doesn’t の後は has ではなく have。'},
+{q:'Which is NOT the same meaning as “Don’t open the door.”?',jp:'同じ意味ではないものを選びなさい。',a:"You don’t have to open the door.",o:['You must not open the door.','You mustn’t open the door.',"You don’t have to open the door.",'Do not open the door.'],e:'Don’t open ... は禁止です。<b>You don’t have to open ...</b> は「開ける必要はない」で意味が異なります。'},
+{q:'You are at a museum. A sign says “No food.” Which is best?',jp:'博物館で「飲食禁止」の表示があります。最も適切な文は？',a:'You must not eat here.',o:['You don’t have to eat here.','You must not eat here.','You have to eat here.','You has to eat here.'],e:'「禁止」の場面なので <b>must not</b>。標識・ルールではよく使われます。'},
+{q:'Tomorrow is a holiday. Which is best?',jp:'明日は休みです。「学校へ行く必要はありません。」',a:"We don’t have to go to school.",o:["We mustn’t go to school.","We don’t have to go to school.","We have to go to school.","Don’t go to school."],e:'休みなので「行く必要がない」。禁止ではないため <b>don’t have to</b>。'},
+{q:'Your teacher says, “This is an important rule.” Which is best?',jp:'先生が「これは大切なルールです」と言っています。「授業中は英語を話さなければなりません。」',a:'You must speak English in class.',o:['You must not speak English in class.','You don’t have to speak English in class.','You must speak English in class.','Don’t speak English in class.'],e:'大切なルールとして義務を表すので <b>must</b> が適切です。'},
+{q:'Find the mistake: “She musts finish her work.”',jp:'誤りを直した文を選びなさい。',a:'She must finish her work.',o:['She must finish her work.','She has must finish her work.','She must to finish her work.','She musts to finish her work.'],e:'助動詞 <b>must</b> は三人称単数でも s をつけません。must + 動詞の原形です。'},
+{q:'Choose the best pair.',jp:'意味の組み合わせとして正しいものを選びなさい。',a:'don’t have to = 必要はない / must not = してはいけない',o:['don’t have to = してはいけない / must not = 必要はない','don’t have to = 必要はない / must not = してはいけない','have to = してはいけない / must = 必要はない','must = 必要はない / must not = しなければならない'],e:'最重要ポイントです。<b>don’t have to = ～する必要はない</b>、<b>must not = ～してはいけない</b>。'}
+];
+let i=0,score=0,answered=Array(qs.length).fill(null);
+const qno=document.getElementById('qno'),question=document.getElementById('question'),options=document.getElementById('options'),feedback=document.getElementById('feedback'),explain=document.getElementById('explain'),explainText=document.getElementById('explainText'),nums=document.getElementById('nums'),scoreEl=document.getElementById('score');
+function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
+function buildNums(){nums.innerHTML='';qs.forEach((_,n)=>{let b=document.createElement('button');b.className='num'+(n===i?' active':'')+(answered[n]===true?' done':'')+(answered[n]===false?' wrong':'');b.textContent=n+1;b.onclick=()=>{i=n;render()};nums.appendChild(b)})}
+function render(){let x=qs[i];qno.textContent=`Question ${i+1} / ${qs.length}`;question.innerHTML=x.q+`<div class="jp">${x.jp}</div>`;options.innerHTML='';shuffle(x.o).forEach(v=>{let lab=document.createElement('label');lab.className='option';lab.innerHTML=`<input type="radio" name="ans" value="${v.replace(/"/g,'&quot;')}"><span>${v}</span>`;options.appendChild(lab)});feedback.className='feedback';feedback.textContent='';explain.className='explain';explainText.innerHTML='';buildNums();scoreEl.textContent=`正解：${score} / ${qs.length}`}
+document.getElementById('check').onclick=()=>{let sel=document.querySelector('input[name="ans"]:checked');if(!sel){feedback.className='feedback ng';feedback.textContent='答えを1つ選んでください。';return}if(answered[i]!==null){feedback.className='feedback '+(answered[i]?'ok':'ng');feedback.textContent=answered[i]?'✅ 正解です！':'❌ 正解は「'+qs[i].a+'」です。';explain.className='explain show';explainText.innerHTML=qs[i].e;return}let ok=sel.value===qs[i].a;answered[i]=ok;if(ok)score++;feedback.className='feedback '+(ok?'ok':'ng');feedback.textContent=ok?'✅ 正解です！ よくできました！':'❌ おしい！ 正解は「'+qs[i].a+'」です。';explain.className='explain show';explainText.innerHTML=qs[i].e;buildNums();scoreEl.textContent=`正解：${score} / ${qs.length}`}
+document.getElementById('next').onclick=()=>{i=(i+1)%qs.length;render()}
+document.getElementById('retry').onclick=()=>{i=0;score=0;answered=Array(qs.length).fill(null);render()}
+render();
+</script>
+</body>
+</html>
